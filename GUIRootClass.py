@@ -6,13 +6,13 @@ class Display:
 	def __init__(self):
 
 		#Initialize all variables
-		x1 = 0
-		x2 = 0
-		y1 = 0
-		y2 = 0
-		rise = 0
-		run = 0
-		outputText = ""
+		self.x1 = 0
+		self.x2 = 0
+		self.y1 = 0
+		self.y2 = 0
+		self.rise = 0
+		self.run = 0
+		self.outputText = "Default"
 
 
 		#Setup GUI
@@ -50,19 +50,21 @@ class Display:
 	def buttonComputeClicked(self):
 		self.storeInput()
 		self.calculateRiseRun()
-		self.simplifyFraction(rise, run)
+		self.simplifyFraction(self.rise, self.run)
+		self.compileRiseRunString()
 		self.outputToTextBox()
 
 	def outputToTextBox(self):
 		print("outputToTextBox run")
+		print("outputText:", self.outputText)
 		self.outputBox.config(state = "normal")
 		self.outputBox.delete('1.0', '100.0')
-		self.outputBox.insert('1.0',outputText)
+		self.outputBox.insert('1.0', self.outputText)
 		self.outputBox.config(state = "disable")
 
 	def compileRiseRunString(self):
 		print("compileRiseRunString run")
-		outputText = "Slope = "+ str(rise)+"/"+str(run)+"."
+		self.outputText = ("Slope: "+ str(self.rise) + "/" + str(self.run))
 
 	def simplifyFraction(self, num, denom):
 		print("simplifyFraction run")
@@ -87,22 +89,22 @@ class Display:
 
 			num = num / divider
 			denom = denom / divider
-		rise = num
-		run = denom
+		self.rise = num
+		self.run = denom
 
 
 	def calculateRiseRun(self):
 		print("calculateRiseRun run")
-		rise = y2 - y1
-		run = x2 - x1
+		self.rise = self.y2 - self.y1
+		self.run = self.x2 - self.x1
 
 
 	def storeInput(self):
 		print("storInput run")
-		x1 = int(self.entryx1.get())
-		y1 = int(self.entryy1.get())
-		x2 = int(self.entryx2.get())
-		y2 = int(self.entryy2.get())
+		self.x1 = int(self.entryx1.get())
+		self.y1 = int(self.entryy1.get())
+		self.x2 = int(self.entryx2.get())
+		self.y2 = int(self.entryy2.get())
 
 
 d = Display() #Constructs a display object
