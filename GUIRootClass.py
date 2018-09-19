@@ -64,7 +64,16 @@ class Display:
 
 	def compileRiseRunString(self):
 		print("compileRiseRunString run")
-		self.outputText = ("Slope: "+ str(self.rise) + "/" + str(self.run))
+		if(self.run == 0 and self.rise != 0):
+			self.outputText = "Slope: Completely verticle"
+		elif((self.run == 1 and self.rise != 0)): #TODO check for -1 #TODO Check for double negative #TODO check if negative and move negative sign
+			self.outputText = ("Slope: " + str(self.rise))
+		elif(self.run != 0 and self.rise == 0):
+			self.outputText = "Slope: Completely horizontal"
+		elif(self.run == 0 and self.rise == 0):
+			self.outputText = ("Please enter different points to calculate slope")
+		else:
+			self.outputText = ("Slope: "+ str(self.rise) + "/" + str(self.run))
 
 	def simplifyFraction(self, num, denom):
 		print("simplifyFraction run")
@@ -72,7 +81,9 @@ class Display:
 		cycle = "true"
 		while(cycle == "true"):	
 			divider = 1
-			if(num % 13 == 0 and denom % 13 == 0 ):
+			if(denom == 0 or num == 0):
+				cycle = "false"
+			elif(num % 13 == 0 and denom % 13 == 0 ):
 				divider = 13
 			elif(num % 11 == 0 and denom % 11 == 0):
 				divider = 11
