@@ -4,8 +4,18 @@ import tkinter as tk #Accessing tkinter module and use tk to call it
 class Display:
 
 	def __init__(self):
-		#Setup GUI
 
+		#Initialize all variables
+		x1 = 0
+		x2 = 0
+		y1 = 0
+		y2 = 0
+		rise = 0
+		run = 0
+		outputText = ""
+
+
+		#Setup GUI
 		print("Running Constructor")
 		self.root = tk.Tk()
 
@@ -18,7 +28,7 @@ class Display:
 		self.entryx2 = tk.Entry(self.root)
 		self.labely2 =  tk.Label(self.root, text = "y2")
 		self.entryy2 = tk.Entry(self.root)
-		self.buttonCompute = tk.Button(self.root, text = "Compute", command = self.storeInput)
+		self.buttonCompute = tk.Button(self.root, text = "Compute", command = self.buttonComputeClicked)
 		self.outputBox = tk.Text(self.root, width = 50, height = 14)
 		self.outputBox.config(state = "disable")
 
@@ -37,31 +47,62 @@ class Display:
 		self.root.mainloop()
 		print("DONE")
 
-	def outputToTextBox(self, rise, run):
+	def buttonComputeClicked(self):
+		self.storeInput()
+		self.calculateRiseRun()
+		self.simplifyFraction(rise, run)
+		self.outputToTextBox()
+
+	def outputToTextBox(self):
+		print("outputToTextBox run")
 		self.outputBox.config(state = "normal")
 		self.outputBox.delete('1.0', '100.0')
-		self.outputBox.insert('1.0',"Slope = "+ str(rise)+"/"+str(run)+".")
+		self.outputBox.insert('1.0',outputText)
 		self.outputBox.config(state = "disable")
 
+	def compileRiseRunString(self):
+		print("compileRiseRunString run")
+		outputText = "Slope = "+ str(rise)+"/"+str(run)+"."
 
-	def calculateRiseRun(self, x1,  y1,  x2,  y2):
+	def simplifyFraction(self, num, denom):
+		print("simplifyFraction run")
+		
+		cycle = "true"
+		while(cycle == "true"):	
+			divider = 1
+			if(num % 13 == 0 and denom % 13 == 0 ):
+				divider = 13
+			elif(num % 11 == 0 and denom % 11 == 0):
+				divider = 11
+			elif(num % 7 == 0 and denom % 7 == 0):
+				divider = 7
+			elif(num % 5 == 0 and denom % 5 == 0):
+				divider = 5
+			elif(num % 3 == 0 and denom % 3 == 0):
+				divider = 3
+			elif(num % 2 == 0 and denom % 2 == 0):
+				divider = 2
+			else:
+				cycle = "false"
+
+			num = num / divider
+			denom = denom / divider
+		rise = num
+		run = denom
+
+
+	def calculateRiseRun(self):
+		print("calculateRiseRun run")
 		rise = y2 - y1
 		run = x2 - x1
 
-		self.outputToTextBox(rise, run)
-		
 
 	def storeInput(self):
-		print("Calculating Slope")
+		print("storInput run")
 		x1 = int(self.entryx1.get())
 		y1 = int(self.entryy1.get())
 		x2 = int(self.entryx2.get())
 		y2 = int(self.entryy2.get())
 
-		self.calculateRiseRun(x1, y1, x2, y2)
-
-	
-
-	
 
 d = Display() #Constructs a display object
