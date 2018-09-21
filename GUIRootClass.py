@@ -66,8 +66,10 @@ class Display:
 		print("compileRiseRunString run")
 		if(self.run == 0 and self.rise != 0):
 			self.outputText = "Slope: Completely verticle"
-		elif((self.run == 1 and self.rise != 0)): #TODO check for -1 #TODO Check for double negative #TODO check if negative and move negative sign
+		elif((self.run == 1 and self.rise != 0)):
 			self.outputText = ("Slope: " + str(self.rise))
+		elif(self.run == -1 and self.rise > 0):
+			self.outputText = ("Slope: " + str(-1 * self.rise))
 		elif(self.run != 0 and self.rise == 0):
 			self.outputText = "Slope: Completely horizontal"
 		elif(self.run < 0 and self.rise < 0):
@@ -79,6 +81,12 @@ class Display:
 
 		if(self.rise % 1 == 0 and self.run %1 == 0):
 			self.outputText = self.outputText.replace(".0","")
+		if(self.rise < 0 and self.run < 0):
+			self.outputText = self.outputText.replace("-","")
+		elif((self.run < 0 and self.rise > 0) and (self.run != -1)):
+			self.outputText = self.outputText.replace("-", "")
+			self.outputText = self.outputText.replace("Slope: ","Slope: -")
+			 
 
 	def simplifyFraction(self, num, denom):
 		print("simplifyFraction run")
