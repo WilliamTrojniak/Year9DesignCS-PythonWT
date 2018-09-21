@@ -1,5 +1,5 @@
 import tkinter as tk #Accessing tkinter module and use tk to call it
-
+import os
 
 class Display:
 
@@ -62,11 +62,14 @@ class Display:
 		self.outputBox.insert('1.0', self.outputText)
 		self.outputBox.config(state = "disable")
 
+		#Say the text in output box
+		os.system("say " + self.outputText)
+
 	def compileRiseRunString(self):
 		print("compileRiseRunString run")
 		if(self.run == 0 and self.rise != 0):
 			self.outputText = "Slope: Completely verticle"
-		elif((self.run == 1 and self.rise != 0)):
+		elif((self.run == 1)):
 			self.outputText = ("Slope: " + str(self.rise))
 		elif(self.run == -1 and self.rise > 0):
 			self.outputText = ("Slope: " + str(-1 * self.rise))
