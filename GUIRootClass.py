@@ -70,10 +70,15 @@ class Display:
 			self.outputText = ("Slope: " + str(self.rise))
 		elif(self.run != 0 and self.rise == 0):
 			self.outputText = "Slope: Completely horizontal"
+		elif(self.run < 0 and self.rise < 0):
+			self.outputText = ("Slope: "+ str(self.rise) + "/" + str(self.run))
 		elif(self.run == 0 and self.rise == 0):
 			self.outputText = ("Please enter different points to calculate slope")
 		else:
 			self.outputText = ("Slope: "+ str(self.rise) + "/" + str(self.run))
+
+		if(self.rise % 1 == 0 and self.run %1 == 0):
+			self.outputText = self.outputText.replace(".0","")
 
 	def simplifyFraction(self, num, denom):
 		print("simplifyFraction run")
@@ -109,13 +114,12 @@ class Display:
 		self.rise = self.y2 - self.y1
 		self.run = self.x2 - self.x1
 
-
 	def storeInput(self):
 		print("storInput run")
-		self.x1 = int(self.entryx1.get())
-		self.y1 = int(self.entryy1.get())
-		self.x2 = int(self.entryx2.get())
-		self.y2 = int(self.entryy2.get())
+		self.x1 = float(self.entryx1.get())
+		self.y1 = float(self.entryy1.get())
+		self.x2 = float(self.entryx2.get())
+		self.y2 = float(self.entryy2.get())
 
 
 d = Display() #Constructs a display object
