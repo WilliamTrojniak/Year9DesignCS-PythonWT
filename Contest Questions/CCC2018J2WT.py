@@ -2,4 +2,4 @@
 
 numOfSpaces = int(input())
 parkStr1 = str(input())
-parkStr2 = 
+parkStr2 = str(input())
