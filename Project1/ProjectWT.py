@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.font as tkFont
 import random
 
+
+
 class Display:
 	def __init__(self):
 
@@ -10,10 +12,10 @@ class Display:
 		self.root = tk.Tk()
 
 		#GUI Layout Config
-		self.titleFont = tkFont.Font(family = "Times", size = 30, weight = "bold", underline = 0)
-		self.guiLblFont = tkFont.Font(family = "Helvitica", size = 14, weight = "normal")
-		self.guiFrameFont = tkFont.Font(family = "Helvitica", size = 16, weight = "bold")
-		self.bttnFont = tkFont.Font(family = "Helvitica", size = 18, weight = "bold")
+		self.titleFont = tkFont.Font(family = "Times", size = 22, weight = "bold", underline = 0)
+		self.guiLblFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
+		self.guiFrameFont = tkFont.Font(family = "Helvitica", size = 13, weight = "bold")
+		self.bttnFont = tkFont.Font(family = "Helvitica", size = 17, weight = "bold")
 		
 		self.title = "STORY GENERATOR"
 
@@ -33,8 +35,8 @@ class Display:
 
 		self.framePadY = 1
 		self.framePadX = 5
-		self.entrPadX = 2
-		self.entrPadY = 2
+		self.entrPadX = 1
+		self.entrPadY = 1
 		self.frameExtPadX = 10
 		self.frameExtPadY = 5
 		self.bttnPadX = 10
@@ -53,9 +55,15 @@ class Display:
 		self.genre = tk.StringVar()
 		self.genre.set("Select Option")
 		self.genreOptions = ["Action", "Fantasy"]
-		self.gender = tk.StringVar()
+		self.heroGender = tk.StringVar()
 		self.maxTrials = 3
 		self.minTrials = 1
+		self.numOfTrialsStr = tk.StringVar()
+		self.numOfTrialsStr.set('1')
+		self.dynamicTrialEntries = [[]]
+		self.currentNumOfTrials = 1
+		self.newNumOfTrials = 0
+		self.numOfTrials = 1
 
 		#String Storage
 		self.fntsyStrtSntnce = ["Once upon a time, in a place known as", "Some time ago, in"]
@@ -77,7 +85,7 @@ class Display:
 		self.genreOMenu = tk.OptionMenu(self.storyFrame, self.genre, self.genreOptions[0], self.genreOptions[1])
 		self.strtPlaceEntr = tk.Entry(self.storyFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		#************ PACKING WIDGETS *****************************************#
-		self.storyFrame.grid(row = 1, column = 0, padx = self.frameExtPadX, pady = self.frameExtPadY)
+		self.storyFrame.grid(row = 1, column = 0, padx = self.frameExtPadX, pady = self.frameExtPadY, sticky = "NSEW")
 		self.genreLbl.grid(row = 0, column = 0)
 		self.strtPlaceLbl.grid(row = 0, column = 1)
 		self.genreOMenu.grid(row = 1, column = 0, padx = self.entrPadX, pady = self.entrPadY)
@@ -89,8 +97,8 @@ class Display:
 		self.heroNmEntr = tk.Entry(self.heroFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.heroGenderLbl = tk.Label(self.heroFrame, text = "Hero's Gender", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.heroStrngthLb  = tk.Label(self.heroFrame, text = "Hero's Strengths", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.heroGenderMRBttn = tk.Radiobutton(self.heroFrame, text = "Male", variable = self.gender, value = "male", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.heroGenderFRBttn = tk.Radiobutton(self.heroFrame, text = "Female", variable = self.gender, value = "female", background = self.lblBgrndClr, font = self.guiLblFont)
+		self.heroGenderMRBttn = tk.Radiobutton(self.heroFrame, text = "Male", variable = self.heroGender, value = "male", background = self.lblBgrndClr, font = self.guiLblFont)
+		self.heroGenderFRBttn = tk.Radiobutton(self.heroFrame, text = "Female", variable = self.heroGender, value = "female", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.heroStrngthEntr1 = tk.Entry(self.heroFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.heroStrngthEntr2 = tk.Entry(self.heroFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.heroStrngthEntr3 = tk.Entry(self.heroFrame, background = self.entrBgrndClr, font = self.guiLblFont)
@@ -120,13 +128,15 @@ class Display:
 		self.mntrGftEntr.grid(row = 1, column = 1, padx = self.entrPadX, pady = self.entrPadY)
 
 		#Trials Information
-		self.trialFrame = tk.LabelFrame(self.root, text = "Trials Information", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY)	
+		self.trialFrame = tk.LabelFrame(self.root, text = "Trials Information", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY, height = 160)	
 		self.trialCntLbl = tk.Label(self.trialFrame, text = "Number of Trials", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.trialCntSpBx = tk.Spinbox(self.trialFrame, from_ = self.minTrials, to = self.maxTrials, background = self.entrBgrndClr, font = self.guiLblFont)
+		self.trialCntSpBx = tk.Spinbox(self.trialFrame, textvariable = self.numOfTrialsStr, from_ = self.minTrials, to = self.maxTrials, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.trialLocLbl = tk.Label(self.trialFrame, text = "Location of Trial", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.trialLocEntr = tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.trialNmLbl = tk.Label(self.trialFrame, text = "Trial", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.trialNmEntr = tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont)
+		self.dynamicTrialEntries[0].append(self.trialLocEntr)
+		self.dynamicTrialEntries[0].append(self.trialNmEntr)
 		#************ PACKING WIDGETS *****************************************#
 		self.trialFrame.grid(row = 4, column = 0, padx = self.frameExtPadX, pady = self.frameExtPadY)
 		self.trialCntLbl.grid(row = 0, column = 1, columnspan = 2)
@@ -197,32 +207,79 @@ class Display:
 
 
 		#Step 3: Initialize window
+		self.numOfTrialsStr.trace('w', self.trialsUpdated)
+
+
 		self.root.mainloop()
 
 #**** Functions ******************************************************************************************************************************************
 
 	def genStory(self):
 		print("Generating story...")
-		self.outTxt.delete(1.0, tk.END)
-		if(self.genre.get() == self.genreOptions[0]):
-			print("Genre is Action")
-			self.outTxt.insert(tk.INSERT, self.getRandStrFromLs(self.actnStrtSntnce))
-		elif(self.genre.get() == self.genreOptions[1]):
-			print("Genre is Fantasy")
-			self.outTxt.insert(tk.END, self.getRandStrFromLs(self.fntsyStrtSntnce))
-		else:
-			self.outTxt.insert(tk.END, "Please select a valid Genre")
-
-
-	def getRandStrFromLs(self, strList):
-		randIndex = random.randint(0, len(strList)-1)
-		print(randIndex)
-		return strList[randIndex]
+		print("Getting variables...")
+		self.genreVar = self.genre.get()
+		self.strPlace = self.strtPlaceEntr.get()
+		self.heroNm = self.heroNmEntr.get()
+		self.heroGenderVar = self.heroGender.get()
+		self.heroStrngth1 = self.heroStrngthEntr1.get()
+		self.heroStrngth2 = self.heroStrngthEntr2.get()
+		self.heroStrngth3 = self.heroStrngthEntr3.get()
+		self.mntrNm = self.mntrNmEntr.get()
+		self.mntrGft = self.mntrGftEntr.get()
 
 
 
-	def bttnClicked(self):#Check function to ensure buttons work
-		print("Clicked")
+
+
+
+
+		#self.outTxt.delete(1.0, tk.END)
+		#if(self.genre.get() == self.genreOptions[0]):
+		#	print("Genre is Action")
+		#	self.outTxt.insert(tk.INSERT, self.getRandItemFromLs(self.actnStrtSntnce))
+		#elif(self.genre.get() == self.genreOptions[1]):
+		#	print("Genre is Fantasy")
+		#	self.outTxt.insert(tk.END, self.getRandItemFromLs(self.fntsyStrtSntnce))
+		#else:
+		#	self.outTxt.insert(tk.END, "Please select a valid Genre")
+
+
+	def trialsUpdated(self, *args): #Handles the trial number being changed
+		try:
+			self.numOfTrials = int(self.numOfTrialsStr.get())
+		except ValueError:
+			print("Invalid Trial Number Given")
+			return
+
+		if(self.numOfTrials > 3):
+			self.numOfTrialsStr.set("3")
+		elif(self.numOfTrials < 1):
+			self.numOfTrialsStr.set("1")
+
+		self.numOfTrials = int(self.numOfTrialsStr.get())
+		self.addTrialEntries(self.numOfTrials)
+		
+
+	def addTrialEntries(self, num): #Adjusts Number of Entries to Reflect the Number of Trials Set
+		#Destroys Previous Entries in Case the Number of Trials Decreased
+		for i in range(0, len(self.dynamicTrialEntries), 1):
+			for t in range(0, len(self.dynamicTrialEntries[i]), 1):
+				self.dynamicTrialEntries[i][t].destroy()
+
+		self.dynamicTrialEntries = [[],[], []] #Resets the List
+
+		#Creates New Entries in dynamicTrialEntries list
+		for i in  range (0, num, 1):
+			self.dynamicTrialEntries[i].append(tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont))
+			self.dynamicTrialEntries[i].append(tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont))
+			self.dynamicTrialEntries[i][0].grid(row = 4+i, column = 0, columnspan = 2, padx = self.entrPadX, pady = self.entrPadY)
+			self.dynamicTrialEntries[i][1].grid(row = 4+i, column = 2, columnspan = 2, padx = self.entrPadX, pady = self.entrPadY)
+
+
+	def getRandItemFromLs(self, exList): #Returns a random item from a list
+		randIndex = random.randint(0, len(exList)-1)		
+		return exList[randIndex]
+
 
 d = Display()
 
