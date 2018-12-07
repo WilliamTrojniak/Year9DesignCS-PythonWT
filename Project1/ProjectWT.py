@@ -66,8 +66,14 @@ class Display:
 		self.numOfTrials = 1
 
 		#String Storage
+		#Fantasy
 		self.fntsyStrtSntnce = ["Once upon a time, in a place known as", "Some time ago, in"]
-		self.actnStrtSntnce = ["In a galaxy far far away, in", "hello"]
+		self.fntsyHeroIntroSntnce = ["there was an elf by the name of", "there was a dwarf by the name of", "there was a knight by the name of"]
+		self.fntsyMentorIntroSntnce = ["On a peculiar night, when the stars aligned just so,", "On a certain morn"]
+		#Action
+		self.actnStrtSntnce = ["In a galaxy far far away, in a place known as", "Once, in the land known as"]
+		self.actnHeroIntroSntnce = ["there was a warrior by the name of", "there was an adventurer by the name of", "there was a spy by the name of"]
+		self.actnMentorIntroSntnce = ["One morning, ", "Walking in the streets, one day,"]
 
 		
 
@@ -178,7 +184,7 @@ class Display:
 		self.hCCBox = tk.Checkbutton(self.accFrame, text = "ON/OFF", variable = self.enableHighContrast, background = self.lblBgrndClr, font = self.guiLblFont)
 		self.fntSizeLbl = tk.Label(self.accFrame, text = "Font Size", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.fntSizeSpBx = tk.Spinbox(self.accFrame, from_ = self.minFontSize, to = self.maxFontSize, background = self.entrBgrndClr, font = self.guiLblFont)
-		self.playTxtToSpchBttn = tk.Button(self.accFrame, text = "Play Text to Speech", command = self.bttnClicked, background = self.entrBgrndClr, font = self.guiLblFont)
+		self.playTxtToSpchBttn = tk.Button(self.accFrame, text = "Play Text to Speech", background = self.entrBgrndClr, font = self.guiLblFont)
 		#************ PACKING WIDGETS *****************************************#
 		self.accFrame.grid(row = 1, column = 2, padx = self.frameExtPadX, pady = self.frameExtPadY, sticky = "E")
 		self.hCLbl.grid(row = 0, column = 0)
@@ -191,7 +197,7 @@ class Display:
 		self.outFrame = tk.LabelFrame(self.root, text = "", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY)
 		self.genStoryBttn = tk.Button(self.outFrame, text = "Generate Story", command = self.genStory, font = self.bttnFont)
 		self.outTxt = tk.Text(self.outFrame, height = self.outTxtH, width = self.outTxtW, background = self.entrBgrndClr, bd = 5)
-		self.saveBttn = tk.Button(self.outFrame, text = "Save", command = self.bttnClicked, font = self.bttnFont)
+		self.saveBttn = tk.Button(self.outFrame, text = "Save", font = self.bttnFont)
 		#************ PACKING WIDGETS *****************************************#
 		self.outFrame.grid(row = 2, column = 1, rowspan = 4, columnspan = 2, padx = self.frameExtPadX, pady = self.frameExtPadY)
 		self.genStoryBttn.grid(row = 0, column = 0, padx = self.bttnPadX, pady = self.bttnPadY)
@@ -215,17 +221,56 @@ class Display:
 #**** Functions ******************************************************************************************************************************************
 
 	def genStory(self):
-		print("Generating story...")
+		#************ GETS ENTRY VALUES *****************************************#
 		print("Getting variables...")
 		self.genreVar = self.genre.get()
-		self.strPlace = self.strtPlaceEntr.get()
+		self.strtPlace = self.strtPlaceEntr.get()
 		self.heroNm = self.heroNmEntr.get()
 		self.heroGenderVar = self.heroGender.get()
+		print("Hero Gender:"+self.heroGenderVar)
 		self.heroStrngth1 = self.heroStrngthEntr1.get()
 		self.heroStrngth2 = self.heroStrngthEntr2.get()
 		self.heroStrngth3 = self.heroStrngthEntr3.get()
+		self.heroHeHer = ""
+		self.heroHimShe = ""
+		if(self.heroGenderVar == "male"):
+			self.heroHimHer = "him"
+			self.heroHeShe = "He"
+		elif(self.heroGenderVar == "female"):
+			self.heroHimHer = "her"
+			self.heroHeShe = "She"
+
+
+
 		self.mntrNm = self.mntrNmEntr.get()
 		self.mntrGft = self.mntrGftEntr.get()
+		self.trialNmLs = []
+		self.trialLocLs = []
+		for i in range(len(self.dynamicTrialEntries)):
+			for t in range(len(self.dynamicTrialEntries[i])):
+				if(t == 0):
+					self.trialLocLs.append(self.dynamicTrialEntries[i][t].get())
+				if(t == 1):
+					self.trialNmLs.append(self.dynamicTrialEntries[i][t].get())
+
+		self.fChllngeLoc = self.fChllngeLocEntr.get()
+		self.fChllngeNm = self.fChllngeNmEntr.get()
+		self.trnsprtHm = self.trnsprtHmEntr.get()
+		self.rslt = self.rsltEntr.get()
+
+		#************ CONSTRUCTS OUTPUT STORY STRING *****************************************#
+		print("Generating story...")
+		self.storyStr = ""
+
+		#Checks what the genre of the story is
+		if(self.genreVar == self.genreOptions[0]):#Genre is Action
+			
+			self.storyStr += self.getRandItemFromLs(self.actnStrtSntnce)
+			self.storyStr += (" " + self.strtPlace+", ")
+			self.storyStr += self.getRandItemFromLs(self.actnHeroIntroSntnce)
+			self.storyStr += (" " + self.heroNm+ ". ")
+			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ".")
+			self.storyStr += (" "+ self.getRandItemFromLs(self.actnMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + "." )
 
 
 
@@ -233,15 +278,50 @@ class Display:
 
 
 
-		#self.outTxt.delete(1.0, tk.END)
-		#if(self.genre.get() == self.genreOptions[0]):
-		#	print("Genre is Action")
-		#	self.outTxt.insert(tk.INSERT, self.getRandItemFromLs(self.actnStrtSntnce))
-		#elif(self.genre.get() == self.genreOptions[1]):
-		#	print("Genre is Fantasy")
-		#	self.outTxt.insert(tk.END, self.getRandItemFromLs(self.fntsyStrtSntnce))
-		#else:
-		#	self.outTxt.insert(tk.END, "Please select a valid Genre")
+
+		elif(self.genre.get() == self.genreOptions[1]):#Genre is Fantasy
+			
+			self.storyStr += self.getRandItemFromLs(self.fntsyStrtSntnce)	
+			self.storyStr += (" " + self.strtPlace+", ")
+			self.storyStr += self.getRandItemFromLs(self.fntsyHeroIntroSntnce)
+			self.storyStr += (" " + self.heroNm+ ". ")
+			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ".")
+			self.storyStr += (" "+ self.getRandItemFromLs(self.fntsyMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + "." )
+
+
+
+
+
+
+		else:
+			self.outPutTxtToBox(1, "Invalid Genre Selected") #Outputs error message to text box if no genre is selected and stops the genStory function
+			return
+
+		
+
+		
+
+
+		self.outPutTxtToBox(0, self.storyStr)
+
+
+
+		
+
+
+
+
+		
+		
+	def outPutTxtToBox(self, isError, outStr):#isError = 0 or 1 : false or true
+		self.outTxt.delete(1.0, tk.END)#clears output text box
+		if(isError == 1):
+			self.outTxt.insert(tk.END, "Error while attempting to generate story: \nError Message: "+ outStr)
+		else:
+			self.outTxt.insert(tk.END, outStr)
+
+
+
 
 
 	def trialsUpdated(self, *args): #Handles the trial number being changed
@@ -249,6 +329,7 @@ class Display:
 			self.numOfTrials = int(self.numOfTrialsStr.get())
 		except ValueError:
 			print("Invalid Trial Number Given")
+			self.outPutTxtToBox(1, "Invalid Trial Number Given")
 			return
 
 		if(self.numOfTrials > 3):
