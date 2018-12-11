@@ -25,6 +25,7 @@ class Display:
 		self.darkestBlue = "#415EAE"
 		self.beige = "#FFEBC0"
 		self.lightBiege = "#FFF4DD" 
+		self.black = "black"
 
 		self.frameBgrndClr = self.darkBlue
 		self.lblBgrndClr = self.darkBlue
@@ -47,12 +48,12 @@ class Display:
 		self.outTxtW = 70
 
 		self.fontSpBxWidth = 3
-		self.trialCntSpBxWidth = 10
+		self.trialCntSpBxWidth = 5
 
 		self.root.configure(background=self.windowBgrndClr, height = 800, width = 1400)
 
 		#Widget Variables
-		self.enableHighContrast = 0
+		self.enableHighContrast = tk.IntVar()
 		self.maxFontSize = 16
 		self.minFontSize = 13
 		self.genre = tk.StringVar()
@@ -145,7 +146,7 @@ class Display:
 		#Trials Information
 		self.trialFrame = tk.LabelFrame(self.root, text = "Trials Information", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY, height = 160)	
 		self.trialCntLbl = tk.Label(self.trialFrame, text = "Number of Trials", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.trialCntSpBx = tk.Spinbox(self.trialFrame, width = self.trialCntSpBxWidth, wrap = True, state = "readonly", command = self.trialsUpdated, from_ = self.minTrials, to = self.maxTrials, background = self.entrBgrndClr, font = self.guiLblFont)
+		self.trialCntSpBx = tk.Spinbox(self.trialFrame, width = self.trialCntSpBxWidth, justify = tk.RIGHT, state = "readonly", command = self.trialsUpdated, from_ = self.minTrials, to = self.maxTrials, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.trialLocLbl = tk.Label(self.trialFrame, text = "Location of Trial", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.trialLocEntr = tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.trialNmLbl = tk.Label(self.trialFrame, text = "Trial", background = self.lblBgrndClr, font = self.guiLblFont)
@@ -190,7 +191,7 @@ class Display:
 		#Accessibility Frame
 		self.accFrame = tk.LabelFrame(self.root, text = "Accessibility", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY)
 		self.hCLbl = tk.Label(self.accFrame, text = "High Contrast", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.hCCBox = tk.Checkbutton(self.accFrame, text = "ON/OFF", variable = self.enableHighContrast, background = self.lblBgrndClr, font = self.guiLblFont)
+		self.hCCBox = tk.Checkbutton(self.accFrame, text = "ON/OFF", variable = self.enableHighContrast, background = self.lblBgrndClr, font = self.guiLblFont, command = self.changeHighContrast)
 		self.fntSizeLbl = tk.Label(self.accFrame, text = "Font Size", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.fntSizeSpBx = tk.Spinbox(self.accFrame, state = "readonly", command = self.fontSizeUpdated, from_ = self.minFontSize, to = self.maxFontSize, background = self.entrBgrndClr, font = self.guiLblFont, width = self.fontSpBxWidth)
 		self.playTxtToSpchBttn = tk.Button(self.accFrame, text = "Play Text to Speech", background = self.entrBgrndClr, font = self.guiLblFont)
@@ -321,18 +322,25 @@ class Display:
 		else:
 			self.outTxt.insert(tk.END, outStr)
 
+	def changeHighContrast(self, *args):
+		
+		if(self.enableHighContrast.get() == 1):
+			self.windowBgrndClr = self.black
+		
+		self.root.config(bg = self.windowBgrndClr)
+
+		
+
 
 
 	def fontSizeUpdated(self, *args): #Handles font size being changed
+		
 		self.guiLblFont.config(size = self.fntSizeSpBx.get())
-
-
 
 	def trialsUpdated(self, *args): #Handles the trial number being changed
 		self.numOfTrials = int(self.trialCntSpBx.get())
 		self.addTrialEntries(self.numOfTrials)
 	
-
 	def addTrialEntries(self, num): #Adjusts Number of Entries to Reflect the Number of Trials Set
 		#Destroys Previous Entries in Case the Number of Trials Decreased
 		for i in range(0, len(self.dynamicTrialEntries), 1):
@@ -347,7 +355,6 @@ class Display:
 			self.dynamicTrialEntries[i].append(tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont))
 			self.dynamicTrialEntries[i][0].grid(row = 4+i, column = 0, columnspan = 2, padx = self.entrPadX, pady = self.entrPadY)
 			self.dynamicTrialEntries[i][1].grid(row = 4+i, column = 2, columnspan = 2, padx = self.entrPadX, pady = self.entrPadY)
-
 
 	def getRandItemFromLs(self, exList): #Returns a random item from a list
 		randIndex = random.randint(0, len(exList)-1)		
