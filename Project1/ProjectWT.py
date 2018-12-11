@@ -66,6 +66,13 @@ class Display:
 		self.numOfTrials = 1
 
 		#String Storage
+		#General
+		self.mntrTrialIntroSntnce = ["\"The road ahead will be dangerous, no doubt,\" said ", "\" You will face many dangers before this though,\" said "]
+		self.mntrFirstTrialDescriptionSntnce = ["\"You will first have to go to ", "\"The first place to which you must journey is to "]
+		self.mntr23TrialDescriptionSntnce = ["\"You must then journey to ", "\"The next place that you must journey to is to "]
+		self.heroDestinySntnce = [" where you must ", " where you will ", " where it is destined that you "]
+		self.heroReluctanceSntnce = [" wasn't sure if this was a journey he was ready to embark upon."]
+
 		#Fantasy
 		self.fntsyStrtSntnce = ["Once upon a time, in a place known as", "Some time ago, in"]
 		self.fntsyHeroIntroSntnce = ["there was an elf by the name of", "there was a dwarf by the name of", "there was a knight by the name of"]
@@ -74,6 +81,7 @@ class Display:
 		self.actnStrtSntnce = ["In a galaxy far far away, in a place known as", "Once, in the land known as"]
 		self.actnHeroIntroSntnce = ["there was a warrior by the name of", "there was an adventurer by the name of", "there was a spy by the name of"]
 		self.actnMentorIntroSntnce = ["One morning, ", "Walking in the streets, one day,"]
+
 
 		
 
@@ -262,32 +270,34 @@ class Display:
 		print("Generating story...")
 		self.storyStr = ""
 
-		#Checks what the genre of the story is
+		#Checks what the genre of the story is, Introduction of story changes based on the genre
 		if(self.genreVar == self.genreOptions[0]):#Genre is Action
-			
 			self.storyStr += self.getRandItemFromLs(self.actnStrtSntnce)
 			self.storyStr += (" " + self.strtPlace+", ")
 			self.storyStr += self.getRandItemFromLs(self.actnHeroIntroSntnce)
 			self.storyStr += (" " + self.heroNm+ ". ")
-			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ".")
-			self.storyStr += (" "+ self.getRandItemFromLs(self.actnMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + "." )
-
-
-
-
-
-
-
+			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ". ")
+			self.storyStr += (" "+ self.getRandItemFromLs(self.actnMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + ". " )
+			
 
 		elif(self.genre.get() == self.genreOptions[1]):#Genre is Fantasy
-			
 			self.storyStr += self.getRandItemFromLs(self.fntsyStrtSntnce)	
 			self.storyStr += (" " + self.strtPlace+", ")
 			self.storyStr += self.getRandItemFromLs(self.fntsyHeroIntroSntnce)
 			self.storyStr += (" " + self.heroNm+ ". ")
 			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ".")
-			self.storyStr += (" "+ self.getRandItemFromLs(self.fntsyMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + "." )
+			self.storyStr += (" "+ self.getRandItemFromLs(self.fntsyMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + ". " )
 
+
+		#Generates the rest of the story that isnt affected by the genre	
+		self.storyStr += (self.mntrNm + " told " + self.heroNm + " of how " + self.heroHeShe.lower() + " must " + self.fChllngeNm + " in order to " + self.rslt + ". ")
+		self.storyStr += (self.getRandItemFromLs(self.mntrTrialIntroSntnce) + self.mntrNm + ". ")
+		self.storyStr += (self.getRandItemFromLs(self.mntrFirstTrialDescriptionSntnce) + self.trialLocLs[0] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[0] + ".\" ")
+		if(len(self.trialLocLs) >= 2):
+			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[1] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[1] + ".\" ")
+		if(len(self.trialLocLs) >= 3):
+			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[2] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[2] + ".\" ")
+		
 
 
 
