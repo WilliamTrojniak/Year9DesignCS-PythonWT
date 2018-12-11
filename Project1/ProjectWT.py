@@ -46,20 +46,21 @@ class Display:
 		self.outTxtH = 25
 		self.outTxtW = 70
 
-		self.root.configure(background=self.windowBgrndClr)
+		self.fontSpBxWidth = 3
+		self.trialCntSpBxWidth = 10
+
+		self.root.configure(background=self.windowBgrndClr, height = 800, width = 1400)
 
 		#Widget Variables
 		self.enableHighContrast = 0
-		self.maxFontSize = 100
-		self.minFontSize = 10
+		self.maxFontSize = 16
+		self.minFontSize = 13
 		self.genre = tk.StringVar()
 		self.genre.set("Select Option")
 		self.genreOptions = ["Action", "Fantasy"]
 		self.heroGender = tk.StringVar()
 		self.maxTrials = 3
 		self.minTrials = 1
-		self.numOfTrialsStr = tk.StringVar()
-		self.numOfTrialsStr.set('1')
 		self.dynamicTrialEntries = [[]]
 		self.currentNumOfTrials = 1
 		self.newNumOfTrials = 0
@@ -144,7 +145,7 @@ class Display:
 		#Trials Information
 		self.trialFrame = tk.LabelFrame(self.root, text = "Trials Information", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY, height = 160)	
 		self.trialCntLbl = tk.Label(self.trialFrame, text = "Number of Trials", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.trialCntSpBx = tk.Spinbox(self.trialFrame, textvariable = self.numOfTrialsStr, from_ = self.minTrials, to = self.maxTrials, background = self.entrBgrndClr, font = self.guiLblFont)
+		self.trialCntSpBx = tk.Spinbox(self.trialFrame, width = self.trialCntSpBxWidth, wrap = True, state = "readonly", command = self.trialsUpdated, from_ = self.minTrials, to = self.maxTrials, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.trialLocLbl = tk.Label(self.trialFrame, text = "Location of Trial", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.trialLocEntr = tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont)
 		self.trialNmLbl = tk.Label(self.trialFrame, text = "Trial", background = self.lblBgrndClr, font = self.guiLblFont)
@@ -191,7 +192,7 @@ class Display:
 		self.hCLbl = tk.Label(self.accFrame, text = "High Contrast", background = self.lblBgrndClr, font = self.guiLblFont)
 		self.hCCBox = tk.Checkbutton(self.accFrame, text = "ON/OFF", variable = self.enableHighContrast, background = self.lblBgrndClr, font = self.guiLblFont)
 		self.fntSizeLbl = tk.Label(self.accFrame, text = "Font Size", background = self.lblBgrndClr, font = self.guiLblFont)
-		self.fntSizeSpBx = tk.Spinbox(self.accFrame, from_ = self.minFontSize, to = self.maxFontSize, background = self.entrBgrndClr, font = self.guiLblFont)
+		self.fntSizeSpBx = tk.Spinbox(self.accFrame, state = "readonly", command = self.fontSizeUpdated, from_ = self.minFontSize, to = self.maxFontSize, background = self.entrBgrndClr, font = self.guiLblFont, width = self.fontSpBxWidth)
 		self.playTxtToSpchBttn = tk.Button(self.accFrame, text = "Play Text to Speech", background = self.entrBgrndClr, font = self.guiLblFont)
 		#************ PACKING WIDGETS *****************************************#
 		self.accFrame.grid(row = 1, column = 2, padx = self.frameExtPadX, pady = self.frameExtPadY, sticky = "E")
@@ -220,10 +221,9 @@ class Display:
 
 
 
+
+
 		#Step 3: Initialize window
-		self.numOfTrialsStr.trace('w', self.trialsUpdated)
-
-
 		self.root.mainloop()
 
 #**** Functions ******************************************************************************************************************************************
@@ -241,7 +241,10 @@ class Display:
 		self.heroStrngth3 = self.heroStrngthEntr3.get()
 		self.heroHeHer = ""
 		self.heroHimShe = ""
-		if(self.heroGenderVar == "male"):
+		if(self.heroGenderVar == ""):
+			self.outPutTxtToBox(1, "No Gender Selected")#Outputs error to textbox if no gender is selected
+			return null
+		elif(self.heroGenderVar == "male"):
 			self.heroHimHer = "him"
 			self.heroHeShe = "He"
 		elif(self.heroGenderVar == "female"):
@@ -287,7 +290,11 @@ class Display:
 			self.storyStr += (" " + self.heroNm+ ". ")
 			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ".")
 			self.storyStr += (" "+ self.getRandItemFromLs(self.fntsyMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + ". " )
+		
 
+		else:
+			self.outPutTxtToBox(1, "Invalid Genre Selected") #Outputs error message to text box if no genre is selected and stops the genStory function
+			return null
 
 		#Generates the rest of the story that isnt affected by the genre	
 		self.storyStr += (self.mntrNm + " told " + self.heroNm + " of how " + self.heroHeShe.lower() + " must " + self.fChllngeNm + " in order to " + self.rslt + ". ")
@@ -298,15 +305,6 @@ class Display:
 		if(len(self.trialLocLs) >= 3):
 			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[2] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[2] + ".\" ")
 		
-
-
-
-
-
-		else:
-			self.outPutTxtToBox(1, "Invalid Genre Selected") #Outputs error message to text box if no genre is selected and stops the genStory function
-			return
-
 		
 
 		
@@ -314,15 +312,8 @@ class Display:
 
 		self.outPutTxtToBox(0, self.storyStr)
 
-
-
 		
 
-
-
-
-		
-		
 	def outPutTxtToBox(self, isError, outStr):#isError = 0 or 1 : false or true
 		self.outTxt.delete(1.0, tk.END)#clears output text box
 		if(isError == 1):
@@ -332,24 +323,15 @@ class Display:
 
 
 
+	def fontSizeUpdated(self, *args): #Handles font size being changed
+		self.guiLblFont.config(size = self.fntSizeSpBx.get())
+
 
 
 	def trialsUpdated(self, *args): #Handles the trial number being changed
-		try:
-			self.numOfTrials = int(self.numOfTrialsStr.get())
-		except ValueError:
-			print("Invalid Trial Number Given")
-			self.outPutTxtToBox(1, "Invalid Trial Number Given")
-			return
-
-		if(self.numOfTrials > 3):
-			self.numOfTrialsStr.set("3")
-		elif(self.numOfTrials < 1):
-			self.numOfTrialsStr.set("1")
-
-		self.numOfTrials = int(self.numOfTrialsStr.get())
+		self.numOfTrials = int(self.trialCntSpBx.get())
 		self.addTrialEntries(self.numOfTrials)
-		
+	
 
 	def addTrialEntries(self, num): #Adjusts Number of Entries to Reflect the Number of Trials Set
 		#Destroys Previous Entries in Case the Number of Trials Decreased
