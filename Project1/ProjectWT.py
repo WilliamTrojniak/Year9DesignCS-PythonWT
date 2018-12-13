@@ -15,6 +15,7 @@ class Display:
 		self.titleFont = tkFont.Font(family = "Times", size = 22, weight = "bold", underline = 0)
 		self.guiLblFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
 		self.guiFrameFont = tkFont.Font(family = "Helvitica", size = 13, weight = "bold")
+		self.guiOutTxtFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
 		self.bttnFont = tkFont.Font(family = "Helvitica", size = 17, weight = "bold")
 		
 		self.title = "STORY GENERATOR"
@@ -76,7 +77,8 @@ class Display:
 		self.heroReluctanceSntnce = ["\"I accept the tasks that you have laid before me, even if it is with some reluctance.\" responded, ", "\"Though I do not like to think of the troubles ahead, I accept your tasks,\" replied "]
 		self.mntrFChllngeIntroSntnce = ["\"Only then, after you have proven worth, will you travel to ", "\"With this, you are to travel to "]
 		self.mntrGiftGivingSntnce = ["\"It is as I had hoped. Then I give to you ", "\"Very well, then I give to you "]
-		self.mntrGiftAidSntnce = [". May it serve you well on your journey.\"", ". It will come in use yet.\""]
+		self.mntrGiftAidSntnce = [". May it serve you well on your journey.\" ", ". It will come in use yet.\" "]
+		self.heroDepartSntnce = ["So our hero left ", "And so our hero departed from "]
 
 		#Fantasy
 		self.fntsyStrtSntnce = ["Once upon a time, in a place known as", "Some time ago, in"]
@@ -86,6 +88,7 @@ class Display:
 		self.actnStrtSntnce = ["In a galaxy far far away, in a place known as", "Once, in the land known as"]
 		self.actnHeroIntroSntnce = ["there was a warrior by the name of", "there was an adventurer by the name of", "there was a spy by the name of"]
 		self.actnMentorIntroSntnce = ["One morning, ", "Walking in the streets, one day,"]
+
 
 
 		
@@ -245,15 +248,18 @@ class Display:
 		self.heroStrngth3 = self.heroStrngthEntr3.get()
 		self.heroHeHer = ""
 		self.heroHimShe = ""
+		self.heroHisHer = ""
 		if(self.heroGenderVar == ""):
 			self.outPutTxtToBox(1, "No Gender Selected")#Outputs error to textbox if no gender is selected
-			return null
+			return
 		elif(self.heroGenderVar == "male"):
 			self.heroHimHer = "him"
 			self.heroHeShe = "He"
+			self.heroHisHer = "his"
 		elif(self.heroGenderVar == "female"):
 			self.heroHimHer = "her"
 			self.heroHeShe = "She"
+			self.heroHisHer = "her"
 
 
 
@@ -298,7 +304,7 @@ class Display:
 
 		else:
 			self.outPutTxtToBox(1, "Invalid Genre Selected") #Outputs error message to text box if no genre is selected and stops the genStory function
-			return null
+			return 
 
 		#Generates the rest of the story that isnt affected by the genre	
 		self.storyStr += (self.mntrNm + " told " + self.heroNm + " of how " + self.heroHeShe.lower() + " must " + self.fChllngeNm + " in order to " + self.rslt + ". ")
@@ -311,7 +317,15 @@ class Display:
 		self.storyStr += (self.getRandItemFromLs(self.mntrFChllngeIntroSntnce) + self.fChllngeLoc + self.getRandItemFromLs(self.heroDestinySntnce) + self.fChllngeNm + " and " + self.rslt + ".\" ")
 		self.storyStr += (self.getRandItemFromLs(self.heroReluctanceSntnce)+ self.heroNm + ". ")
 		self.storyStr += (self.getRandItemFromLs(self.mntrGiftGivingSntnce) + self.mntrGft + self.getRandItemFromLs(self.mntrGiftAidSntnce))
-		
+		self.storyStr += (self.getRandItemFromLs(self.heroDepartSntnce) + self.strtPlace + " and journeyed to " + self.trialLocLs[0] + ". ")
+		self.storyStr += ("Here, " + self.heroHeShe.lower() + " " + self.trialNmLs[0] + " using " + self.heroHisHer + " " + self.heroStrngth1 + ". ")
+		if(len(self.trialLocLs) >= 2):
+			self.storyStr += (self.heroHeShe + " then traveled to " + self.trialLocLs[1] + " and using " + self.heroHisHer + " " +  self.heroStrngth2 + ", " + self.heroHeShe.lower() + " " + self.trialNmLs[1] + ". ")
+		if(len(self.trialLocLs) >= 3):
+			self.storyStr += ("Finally, "+ self.heroHeShe.lower() + "  proceeded to " + self.trialLocLs[2] + " and with " + self.heroHisHer + " " +  self.heroStrngth3 + ", " + self.heroHeShe.lower() + " " + self.trialNmLs[2] + ". ")
+		self.storyStr += ("With this our hero was prepared to " + self.fChllngeNm + " at " + self.fChllngeLoc + ", and so there " + self.heroHeShe.lower() + " journeyed. ")
+		self.storyStr += ("Using all of " + self.heroHisHer + " skills, " + self.heroNm + " " + self.fChllngeNm + " .")
+		self.storyStr += ("With this, " + self.heroNm + " " + self.rslt +  " and returned to " + self.strtPlace + " by " + self.trnsprtHm + ", where " + self.heroHeShe.lower() + " was recieved as a true hero.")
 
 		
 
@@ -327,7 +341,7 @@ class Display:
 		else:
 			self.outTxt.insert(tk.END, outStr)
 
-	def changeHighContrast(self, *args):
+	def changeHighContrast(self, *args): #Handles high contrast being turned on and off
 		
 		if(self.enableHighContrast.get() == 1):
 			self.windowBgrndClr = self.black
