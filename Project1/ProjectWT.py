@@ -73,7 +73,10 @@ class Display:
 		self.mntrFirstTrialDescriptionSntnce = ["\"You will first have to go to ", "\"The first place to which you must journey is to "]
 		self.mntr23TrialDescriptionSntnce = ["\"You must then journey to ", "\"The next place that you must journey to is to "]
 		self.heroDestinySntnce = [" where you must ", " where you will ", " where it is destined that you "]
-		self.heroReluctanceSntnce = [" wasn't sure if this was a journey he was ready to embark upon."]
+		self.heroReluctanceSntnce = ["\"I accept the tasks that you have laid before me, even if it is with some reluctance.\" responded, ", "\"Though I do not like to think of the troubles ahead, I accept your tasks,\" replied "]
+		self.mntrFChllngeIntroSntnce = ["\"Only then, after you have proven worth, will you travel to ", "\"With this, you are to travel to "]
+		self.mntrGiftGivingSntnce = ["\"It is as I had hoped. Then I give to you ", "\"Very well, then I give to you "]
+		self.mntrGiftAidSntnce = [". May it serve you well on your journey.\"", ". It will come in use yet.\""]
 
 		#Fantasy
 		self.fntsyStrtSntnce = ["Once upon a time, in a place known as", "Some time ago, in"]
@@ -305,7 +308,9 @@ class Display:
 			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[1] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[1] + ".\" ")
 		if(len(self.trialLocLs) >= 3):
 			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[2] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[2] + ".\" ")
-		
+		self.storyStr += (self.getRandItemFromLs(self.mntrFChllngeIntroSntnce) + self.fChllngeLoc + self.getRandItemFromLs(self.heroDestinySntnce) + self.fChllngeNm + " and " + self.rslt + ".\" ")
+		self.storyStr += (self.getRandItemFromLs(self.heroReluctanceSntnce)+ self.heroNm + ". ")
+		self.storyStr += (self.getRandItemFromLs(self.mntrGiftGivingSntnce) + self.mntrGft + self.getRandItemFromLs(self.mntrGiftAidSntnce))
 		
 
 		
@@ -326,12 +331,10 @@ class Display:
 		
 		if(self.enableHighContrast.get() == 1):
 			self.windowBgrndClr = self.black
+		else:
+			self.windowBgrndClr = self.lightBiege
 		
 		self.root.config(bg = self.windowBgrndClr)
-
-		
-
-
 
 	def fontSizeUpdated(self, *args): #Handles font size being changed
 		
