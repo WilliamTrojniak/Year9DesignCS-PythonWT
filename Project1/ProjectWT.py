@@ -10,16 +10,10 @@ class Display:
 #**** Variables ******************************************************************************************************************************************
 
 		self.root = tk.Tk()
+		self.root.config(bg=self.windowBgrndClr)
 
-		#GUI Layout Config
-		self.titleFont = tkFont.Font(family = "Times", size = 22, weight = "bold", underline = 0)
-		self.guiLblFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
-		self.guiFrameFont = tkFont.Font(family = "Helvitica", size = 13, weight = "bold")
-		self.guiOutTxtFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
-		self.bttnFont = tkFont.Font(family = "Helvitica", size = 17, weight = "bold")
-		
-		self.title = "STORY GENERATOR"
 
+		#Colour Storage
 		self.lightBlue = "#B1E5EA"
 		self.lightestBlue = "#CAF0F4"
 		self.darkBlue = "#7DC6CD"
@@ -27,6 +21,15 @@ class Display:
 		self.beige = "#FFEBC0"
 		self.lightBiege = "#FFF4DD" 
 		self.black = "black"
+
+		#GUI Visual Settings and Layout Config
+		self.titleFont = tkFont.Font(family = "Times", size = 22, weight = "bold", underline = 0)
+		self.guiLblFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
+		self.guiFrameFont = tkFont.Font(family = "Helvitica", size = 13, weight = "bold")
+		self.guiOutTxtFont = tkFont.Font(family = "Helvitica", size = 13, weight = "normal")
+		self.bttnFont = tkFont.Font(family = "Helvitica", size = 17, weight = "bold")
+		
+		self.title = "STORY GENERATOR"
 
 		self.frameBgrndClr = self.darkBlue
 		self.lblBgrndClr = self.darkBlue
@@ -51,9 +54,12 @@ class Display:
 		self.fontSpBxWidth = 3
 		self.trialCntSpBxWidth = 5
 
-		self.root.configure(background=self.windowBgrndClr, height = 800, width = 1400)
+		
 
-		#Widget Variables
+		#Widget Storage Variables
+		self.dynamicTrialEntries = [[]]
+
+		#Widget Value Variables
 		self.enableHighContrast = tk.IntVar()
 		self.maxFontSize = 16
 		self.minFontSize = 13
@@ -63,18 +69,18 @@ class Display:
 		self.heroGender = tk.StringVar()
 		self.maxTrials = 3
 		self.minTrials = 1
-		self.dynamicTrialEntries = [[]]
+		
 		self.currentNumOfTrials = 1
 		self.newNumOfTrials = 0
 		self.numOfTrials = 1
 
-		#String Storage
+		#String Storage For Story Generation
 		#General
 		self.mntrTrialIntroSntnce = ["\"The road ahead will be dangerous, no doubt,\" said ", "\" You will face many dangers before this though,\" said "]
 		self.mntrFirstTrialDescriptionSntnce = ["\"You will first have to go to ", "\"The first place to which you must journey is to "]
 		self.mntr23TrialDescriptionSntnce = ["\"You must then journey to ", "\"The next place that you must journey to is to "]
 		self.heroDestinySntnce = [" where you must ", " where you will ", " where it is destined that you "]
-		self.heroReluctanceSntnce = ["\"I accept the tasks that you have laid before me, even if it is with some reluctance.\" responded, ", "\"Though I do not like to think of the troubles ahead, I accept your tasks,\" replied "]
+		self.heroReluctanceSntnce = ["\"I accept the tasks that you have laid before me, even if it is with some reluctance,\" responded, ", "\"Though I do not like to think of the troubles ahead, I accept your tasks,\" replied "]
 		self.mntrFChllngeIntroSntnce = ["\"Only then, after you have proven worth, will you travel to ", "\"With this, you are to travel to "]
 		self.mntrGiftGivingSntnce = ["\"It is as I had hoped. Then I give to you ", "\"Very well, then I give to you "]
 		self.mntrGiftAidSntnce = [". May it serve you well on your journey.\" ", ". It will come in use yet.\" "]
@@ -87,7 +93,7 @@ class Display:
 		#Action
 		self.actnStrtSntnce = ["In a galaxy far far away, in a place known as", "Once, in the land known as"]
 		self.actnHeroIntroSntnce = ["there was a warrior by the name of", "there was an adventurer by the name of", "there was a spy by the name of"]
-		self.actnMentorIntroSntnce = ["One morning, ", "Walking in the streets, one day,"]
+		self.actnMentorIntroSntnce = ["One morning, ", "Walking in the streets one day,"]
 
 
 
@@ -212,7 +218,7 @@ class Display:
 		#Buttons and Output Text Frame
 		self.outFrame = tk.LabelFrame(self.root, text = "", background = self.frameBgrndClr, font = self.guiFrameFont, padx = self.framePadX, pady = self.framePadY)
 		self.genStoryBttn = tk.Button(self.outFrame, text = "Generate Story", command = self.genStory, font = self.bttnFont)
-		self.outTxt = tk.Text(self.outFrame, height = self.outTxtH, width = self.outTxtW, background = self.entrBgrndClr, bd = 5)
+		self.outTxt = tk.Text(self.outFrame, height = self.outTxtH, width = self.outTxtW, background = self.entrBgrndClr, bd = 5, wrap = tk.WORD, font = self.guiOutTxtFont, state = "disabled")
 		self.saveBttn = tk.Button(self.outFrame, text = "Save", font = self.bttnFont)
 		#************ PACKING WIDGETS *****************************************#
 		self.outFrame.grid(row = 2, column = 1, rowspan = 4, columnspan = 2, padx = self.frameExtPadX, pady = self.frameExtPadY)
@@ -236,110 +242,101 @@ class Display:
 #**** Functions ******************************************************************************************************************************************
 
 	def genStory(self):
-		#************ GETS ENTRY VALUES *****************************************#
-		print("Getting variables...")
-		self.genreVar = self.genre.get()
-		self.strtPlace = self.strtPlaceEntr.get()
-		self.heroNm = self.heroNmEntr.get()
-		self.heroGenderVar = self.heroGender.get()
-		print("Hero Gender:"+self.heroGenderVar)
-		self.heroStrngth1 = self.heroStrngthEntr1.get()
-		self.heroStrngth2 = self.heroStrngthEntr2.get()
-		self.heroStrngth3 = self.heroStrngthEntr3.get()
-		self.heroHeHer = ""
-		self.heroHimShe = ""
-		self.heroHisHer = ""
-		if(self.heroGenderVar == ""):
-			self.outPutTxtToBox(1, "No Gender Selected")#Outputs error to textbox if no gender is selected
+		#************ STORES ENTRY VALUES AS TEMPORARY VARIABLES *****************************************
+		genreVar = self.genre.get()
+		strtPlace = self.strtPlaceEntr.get()
+		heroNm = self.heroNmEntr.get()
+		heroGender = self.heroGender.get()
+		heroHeShe = ""
+		heroHimHer = ""
+		heroHisHer = ""
+		if(heroGender == ""):
+			self.outPutTxtToBox(1, "Invalid Gender Selected")#Outputs error to textbox if no gender is selected
 			return
-		elif(self.heroGenderVar == "male"):
-			self.heroHimHer = "him"
-			self.heroHeShe = "He"
-			self.heroHisHer = "his"
-		elif(self.heroGenderVar == "female"):
-			self.heroHimHer = "her"
-			self.heroHeShe = "She"
-			self.heroHisHer = "her"
-
-
-
-		self.mntrNm = self.mntrNmEntr.get()
-		self.mntrGft = self.mntrGftEntr.get()
-		self.trialNmLs = []
-		self.trialLocLs = []
-		for i in range(len(self.dynamicTrialEntries)):
+		elif(heroGender == "male"): #Sets gender specific words to respective word depending on gender of hero
+			heroHimHer = "him"
+			heroHeShe = "He"
+			heroHisHer = "his"
+		elif(heroGender == "female"):
+			heroHimHer = "her"
+			heroHeShe = "She"
+			heroHisHer = "her"
+		heroStrngth1 = self.heroStrngthEntr1.get()
+		heroStrngth2 = self.heroStrngthEntr2.get()
+		heroStrngth3 = self.heroStrngthEntr3.get()
+		mntrNm = self.mntrNmEntr.get()
+		mntrGft = self.mntrGftEntr.get()
+		trialNmLs = []
+		trialLocLs = []
+		for i in range(len(self.dynamicTrialEntries)): #Stores trial loc and name values in respective lists
 			for t in range(len(self.dynamicTrialEntries[i])):
 				if(t == 0):
-					self.trialLocLs.append(self.dynamicTrialEntries[i][t].get())
+					trialLocLs.append(self.dynamicTrialEntries[i][t].get())
 				if(t == 1):
-					self.trialNmLs.append(self.dynamicTrialEntries[i][t].get())
+					trialNmLs.append(self.dynamicTrialEntries[i][t].get())
+		fChllngeLoc = self.fChllngeLocEntr.get()
+		fChllngeNm = self.fChllngeNmEntr.get()
+		trnsprtHm = self.trnsprtHmEntr.get()
+		rslt = self.rsltEntr.get()
 
-		self.fChllngeLoc = self.fChllngeLocEntr.get()
-		self.fChllngeNm = self.fChllngeNmEntr.get()
-		self.trnsprtHm = self.trnsprtHmEntr.get()
-		self.rslt = self.rsltEntr.get()
 
-		#************ CONSTRUCTS OUTPUT STORY STRING *****************************************#
-		print("Generating story...")
-		self.storyStr = ""
+
+		#************ CONSTRUCTS STORY OUTPUT STRING *****************************************#
+		#print("Generating story...")
+		storyStr = ""
 
 		#Checks what the genre of the story is, Introduction of story changes based on the genre
-		if(self.genreVar == self.genreOptions[0]):#Genre is Action
-			self.storyStr += self.getRandItemFromLs(self.actnStrtSntnce)
-			self.storyStr += (" " + self.strtPlace+", ")
-			self.storyStr += self.getRandItemFromLs(self.actnHeroIntroSntnce)
-			self.storyStr += (" " + self.heroNm+ ". ")
-			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ". ")
-			self.storyStr += (" "+ self.getRandItemFromLs(self.actnMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + ". " )
+		if(genreVar == self.genreOptions[0]):#Genre is Action
+			storyStr += self.getRandItemFromLs(self.actnStrtSntnce)
+			storyStr += (" " + strtPlace+", ")
+			storyStr += self.getRandItemFromLs(self.actnHeroIntroSntnce)
+			storyStr += (" " + heroNm+ ". ")
+			storyStr += (heroNm + " had " + heroStrngth2 + ", " + heroStrngth3 + " and " + heroStrngth1 + ". ")
+			storyStr += (" "+ self.getRandItemFromLs(self.actnMentorIntroSntnce) + " " + mntrNm+" approached " + heroHimHer + ". " )
 			
-
 		elif(self.genre.get() == self.genreOptions[1]):#Genre is Fantasy
-			self.storyStr += self.getRandItemFromLs(self.fntsyStrtSntnce)	
-			self.storyStr += (" " + self.strtPlace+", ")
-			self.storyStr += self.getRandItemFromLs(self.fntsyHeroIntroSntnce)
-			self.storyStr += (" " + self.heroNm+ ". ")
-			self.storyStr += (self.heroNm + " had " + self.heroStrngth2 + ", " + self.heroStrngth3 + " and " + self.heroStrngth1 + ".")
-			self.storyStr += (" "+ self.getRandItemFromLs(self.fntsyMentorIntroSntnce) + " " + self.mntrNm+" approached " + self.heroHimHer + ". " )
-		
+			storyStr += self.getRandItemFromLs(self.fntsyStrtSntnce)	
+			storyStr += (" " + strtPlace+", ")
+			storyStr += self.getRandItemFromLs(self.fntsyHeroIntroSntnce)
+			storyStr += (" " + heroNm+ ". ")
+			storyStr += (heroNm + " had " + heroStrngth2 + ", " + heroStrngth3 + " and " + heroStrngth1 + ".")
+			storyStr += (" "+ self.getRandItemFromLs(self.fntsyMentorIntroSntnce) + " " + mntrNm+" approached " + heroHimHer + ". " )
 
 		else:
 			self.outPutTxtToBox(1, "Invalid Genre Selected") #Outputs error message to text box if no genre is selected and stops the genStory function
 			return 
 
 		#Generates the rest of the story that isnt affected by the genre	
-		self.storyStr += (self.mntrNm + " told " + self.heroNm + " of how " + self.heroHeShe.lower() + " must " + self.fChllngeNm + " in order to " + self.rslt + ". ")
-		self.storyStr += (self.getRandItemFromLs(self.mntrTrialIntroSntnce) + self.mntrNm + ". ")
-		self.storyStr += (self.getRandItemFromLs(self.mntrFirstTrialDescriptionSntnce) + self.trialLocLs[0] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[0] + ".\" ")
-		if(len(self.trialLocLs) >= 2):
-			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[1] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[1] + ".\" ")
-		if(len(self.trialLocLs) >= 3):
-			self.storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + self.trialLocLs[2] + self.getRandItemFromLs(self.heroDestinySntnce) + self.trialNmLs[2] + ".\" ")
-		self.storyStr += (self.getRandItemFromLs(self.mntrFChllngeIntroSntnce) + self.fChllngeLoc + self.getRandItemFromLs(self.heroDestinySntnce) + self.fChllngeNm + " and " + self.rslt + ".\" ")
-		self.storyStr += (self.getRandItemFromLs(self.heroReluctanceSntnce)+ self.heroNm + ". ")
-		self.storyStr += (self.getRandItemFromLs(self.mntrGiftGivingSntnce) + self.mntrGft + self.getRandItemFromLs(self.mntrGiftAidSntnce))
-		self.storyStr += (self.getRandItemFromLs(self.heroDepartSntnce) + self.strtPlace + " and journeyed to " + self.trialLocLs[0] + ". ")
-		self.storyStr += ("Here, " + self.heroHeShe.lower() + " " + self.trialNmLs[0] + " using " + self.heroHisHer + " " + self.heroStrngth1 + ". ")
-		if(len(self.trialLocLs) >= 2):
-			self.storyStr += (self.heroHeShe + " then traveled to " + self.trialLocLs[1] + " and using " + self.heroHisHer + " " +  self.heroStrngth2 + ", " + self.heroHeShe.lower() + " " + self.trialNmLs[1] + ". ")
-		if(len(self.trialLocLs) >= 3):
-			self.storyStr += ("Finally, "+ self.heroHeShe.lower() + "  proceeded to " + self.trialLocLs[2] + " and with " + self.heroHisHer + " " +  self.heroStrngth3 + ", " + self.heroHeShe.lower() + " " + self.trialNmLs[2] + ". ")
-		self.storyStr += ("With this our hero was prepared to " + self.fChllngeNm + " at " + self.fChllngeLoc + ", and so there " + self.heroHeShe.lower() + " journeyed. ")
-		self.storyStr += ("Using all of " + self.heroHisHer + " skills, " + self.heroNm + " " + self.fChllngeNm + " .")
-		self.storyStr += ("With this, " + self.heroNm + " " + self.rslt +  " and returned to " + self.strtPlace + " by " + self.trnsprtHm + ", where " + self.heroHeShe.lower() + " was recieved as a true hero.")
+		storyStr += (mntrNm + " told " + heroNm + " of how " + heroHeShe.lower() + " must " + fChllngeNm + " in order to " + rslt + ". ")
+		storyStr += (self.getRandItemFromLs(self.mntrTrialIntroSntnce) + mntrNm + ". ")
+		storyStr += (self.getRandItemFromLs(self.mntrFirstTrialDescriptionSntnce) + trialLocLs[0] + self.getRandItemFromLs(self.heroDestinySntnce) + trialNmLs[0] + ".\" ")
+		if(len(trialLocLs) >= 2):
+			storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + trialLocLs[1] + self.getRandItemFromLs(self.heroDestinySntnce) + trialNmLs[1] + ".\" ")
+		if(len(trialLocLs) >= 3):
+			storyStr += (self.getRandItemFromLs(self.mntr23TrialDescriptionSntnce) + trialLocLs[2] + self.getRandItemFromLs(self.heroDestinySntnce) + trialNmLs[2] + ".\" ")
+		storyStr += (self.getRandItemFromLs(self.mntrFChllngeIntroSntnce) + fChllngeLoc + self.getRandItemFromLs(self.heroDestinySntnce) + fChllngeNm + " and " + rslt + ".\" ")
+		storyStr += (self.getRandItemFromLs(self.heroReluctanceSntnce)+ heroNm + ". ")
+		storyStr += (self.getRandItemFromLs(self.mntrGiftGivingSntnce) + mntrGft + self.getRandItemFromLs(self.mntrGiftAidSntnce))
+		storyStr += (self.getRandItemFromLs(self.heroDepartSntnce) + strtPlace + " and journeyed to " + trialLocLs[0] + ". ")
+		storyStr += ("Here, " + heroHeShe.lower() + " " + trialNmLs[0] + " using " + heroHisHer + " " + heroStrngth1 + ". ")
+		if(len(trialLocLs) >= 2):
+			storyStr += (heroHeShe + " then traveled to " + trialLocLs[1] + " and using " + heroHisHer + " " +  heroStrngth2 + ", " + heroHeShe.lower() + " " + trialNmLs[1] + ". ")
+		if(len(trialLocLs) >= 3):
+			storyStr += ("Finally, "+ heroHeShe.lower() + "  proceeded to " + trialLocLs[2] + " and with " + heroHisHer + " " +  heroStrngth3 + ", " + heroHeShe.lower() + " " + trialNmLs[2] + ". ")
+		storyStr += ("With this our hero was prepared to " + fChllngeNm + " at " + fChllngeLoc + ", and so there " + heroHeShe.lower() + " journeyed. ")
+		storyStr += ("Using all of " + heroHisHer + " skills, " + heroNm + " " + fChllngeNm + " . ")
+		storyStr += ("With this, " + heroNm + " " + rslt +  " and returned to " + strtPlace + " by " + trnsprtHm + ", where " + heroHeShe.lower() + " was recieved as a true hero.")
 
-		
-
-
-		self.outPutTxtToBox(0, self.storyStr)
-
-		
+		self.outPutTxtToBox(0, storyStr) #Passes storyStr to outputTxtToBox function to be outputted	
 
 	def outPutTxtToBox(self, isError, outStr):#isError = 0 or 1 : false or true
+		self.outTxt.config(state = "normal")
 		self.outTxt.delete(1.0, tk.END)#clears output text box
 		if(isError == 1):
 			self.outTxt.insert(tk.END, "Error while attempting to generate story: \nError Message: "+ outStr)
 		else:
 			self.outTxt.insert(tk.END, outStr)
+		self.outTxt.config(state = "disabled")
 
 	def changeHighContrast(self, *args): #Handles high contrast being turned on and off
 		
@@ -351,29 +348,28 @@ class Display:
 		self.root.config(bg = self.windowBgrndClr)
 
 	def fontSizeUpdated(self, *args): #Handles font size being changed
-		
-		self.guiLblFont.config(size = self.fntSizeSpBx.get())
+		newFont = self.fntSizeSpBx.get()
+		self.guiLblFont.config(size = newFont)
+		self.guiOutTxtFont.config(size = newFont)
 
 	def trialsUpdated(self, *args): #Handles the trial number being changed
-		self.numOfTrials = int(self.trialCntSpBx.get())
-		self.addTrialEntries(self.numOfTrials)
-	
-	def addTrialEntries(self, num): #Adjusts Number of Entries to Reflect the Number of Trials Set
+		numOfTrials = int(self.trialCntSpBx.get())
+
 		#Destroys Previous Entries in Case the Number of Trials Decreased
 		for i in range(0, len(self.dynamicTrialEntries), 1):
 			for t in range(0, len(self.dynamicTrialEntries[i]), 1):
 				self.dynamicTrialEntries[i][t].destroy()
 
-		self.dynamicTrialEntries = [[],[], []] #Resets the List
+		self.dynamicTrialEntries = [[],[],[]] #Resets the List
 
 		#Creates New Entries in dynamicTrialEntries list
-		for i in  range (0, num, 1):
+		for i in  range (0, numOfTrials, 1):
 			self.dynamicTrialEntries[i].append(tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont))
 			self.dynamicTrialEntries[i].append(tk.Entry(self.trialFrame, background = self.entrBgrndClr, font = self.guiLblFont))
 			self.dynamicTrialEntries[i][0].grid(row = 4+i, column = 0, columnspan = 2, padx = self.entrPadX, pady = self.entrPadY)
 			self.dynamicTrialEntries[i][1].grid(row = 4+i, column = 2, columnspan = 2, padx = self.entrPadX, pady = self.entrPadY)
 
-	def getRandItemFromLs(self, exList): #Returns a random item from a list
+	def getRandItemFromLs(self, exList): #Returns a random element from a list
 		randIndex = random.randint(0, len(exList)-1)		
 		return exList[randIndex]
 
