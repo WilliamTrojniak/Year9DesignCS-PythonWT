@@ -50,7 +50,7 @@ class Display:
 		
 		#Program Information
 		self.title = "STORY GENERATOR"
-		self.version = "0.1"
+		self.version = "1.0"
 		self.DEVELOPER = "William Trojniak"
 		self.YEAR = "2018"
 		self.windowTitle = self.title + " V."+ self.version + " ~" + self.DEVELOPER + " " + self.YEAR
@@ -434,9 +434,6 @@ class Display:
 		f.close()
 		self.outPutTxtToBox(0, t)
 		
-		
-
-
 	def handleTextToSpeech(self, *args):
 		if(self.isReadingTxtToSpeech == False):
 			self.isReadingTxtToSpeech = True
