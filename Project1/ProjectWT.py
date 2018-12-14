@@ -24,9 +24,7 @@ class Display:
 #**** Variables ******************************************************************************************************************************************
 		self.root = tk.Tk()
 
-		#Saved stories
-		self.savedStories = []
-		self.savedStoryCntr = 0
+		
 
 		#Colour Storage
 		self.LIGHT_BLUE = "#CAF0F4"
@@ -115,6 +113,18 @@ class Display:
 		self.heroGender = tk.StringVar()
 		self.maxTrials = 3
 		self.minTrials = 1
+
+		#Saved stories
+		self.SAVEDSTORIESDOC = "savedStories.txt"
+		f = open(self.SAVEDSTORIESDOC, "a+")
+		f.close()
+		f = open(self.SAVEDSTORIESDOC, "r")
+		self.savedStories = f.read().splitlines()
+		f.close()
+		#print(self.savedStories)
+		self.savedStoryCntr = len(self.savedStories)
+		
+		
 
 		#Text to speech
 		self.isReadingTxtToSpeech = False
@@ -270,12 +280,21 @@ class Display:
 		self.outTxt = tk.Text(self.outFrame, height = self.outTxtH, width = self.outTxtW, yscrollcommand=self.txtScroll.set)
 		self.saveBttn = tk.Button(self.outFrame, text = "Save", command = self.saveStory)
 		self.txtScroll.config(command = self.outTxt.yview)
+		self.savedStoryScroll = tk.Scrollbar(self.outFrame)
+		self.savedStoryLsBox = tk.Listbox(self.outFrame, height = 3, yscrollcommand = self.savedStoryScroll.set)
+		self.savedStoryScroll.config(command = self.savedStoryLsBox.yview)
+		self.savedStoryLsBox.bind("<Double-Button-1>", self.loadStory)
 		#************ PACKING WIDGETS *****************************************#
-		self.outFrame.grid(row = 2, column = 1, rowspan = 4, columnspan = 2, padx = self.frameExtPadX, pady = self.frameExtPadY)
-		self.genStoryBttn.grid(row = 0, column = 0, padx = self.bttnPadX, pady = self.bttnPadY)
-		self.outTxt.grid(row = 1, column = 0)
-		self.saveBttn.grid(row = 2, column = 0, padx = self.bttnPadX, pady = self.bttnPadY)
-		self.txtScroll.grid(row = 1, column = 1, sticky = "NS")
+		self.outFrame.grid(row = 2, column = 1, rowspan = 5, columnspan = 2, padx = self.frameExtPadX, pady = self.frameExtPadY)
+		self.genStoryBttn.grid(row = 0, column = 0, columnspan = 3, padx = self.bttnPadX, pady = self.bttnPadY)
+		self.outTxt.grid(row = 1, column = 0, columnspan = 3)
+		self.saveBttn.grid(row = 2, column = 0,  padx = self.bttnPadX, pady = self.bttnPadY)
+		self.txtScroll.grid(row = 1, column = 3, sticky = "NS")
+		self.savedStoryLsBox.grid(row = 2, column = 1, pady = 5, padx = self.entrPadX, sticky = "NES")
+		self.savedStoryScroll.grid(row = 2, column = 2, sticky ="NWS", pady = 5)
+
+		for i in range(len(self.savedStories)): #Inserts previously saved stories into the listbox upon launch
+			self.savedStoryLsBox.insert(tk.END, self.savedStories[i])
 
 		#Storing Widgets by Types in Lists for Configuration
 		self.frameLs.extend([self.storyFrame, self.heroFrame, self.mntrFrame, self.trialFrame, self.fChllngeFrame, self.endFrame, self.outFrame, self.accFrame])
@@ -396,12 +415,30 @@ class Display:
 		self.outTxt.config(state = "disabled")
 
 	def saveStory(self, *args):
-		print("done")
+		storyName = "SavedStory" + str(self.savedStoryCntr) + ".txt"
+		f = open(storyName, "w+")
+		f.write(self.outTxt.get(1.0, tk.END))
+		f.close()
+		self.savedStories.append(storyName)
+		f = open(self.SAVEDSTORIESDOC, "a+")
+		f.write(storyName + "\n")
+		f.close()
+		self.savedStoryCntr+= 1
 
+		self.savedStoryLsBox.insert(tk.END, storyName)
+
+	def loadStory(self, event):
+		t = ""
+		f = open(self.savedStories[event.widget.curselection()[0]], "r")
+		t = f.read()
+		f.close()
+		self.outPutTxtToBox(0, t)
+		
+		
 
 
 	def handleTextToSpeech(self, *args):
-		if(self.isReadingTxtToSpeech = False):
+		if(self.isReadingTxtToSpeech == False):
 			self.isReadingTxtToSpeech = True
 			string = ""
 			if(self.txtToSpeechRead == 1):
