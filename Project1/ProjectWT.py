@@ -1,8 +1,18 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import random
-from threading import Thread
+import threading
 import os
+
+
+def myThread(threading.Thread):
+	def __init__(self, stringToRead):
+		threading.Thread.__init__(self)
+		self.stringToRead = stringToRead
+	def run(self):
+		print("reading")
+		#os.system("say " + string)
+		print("Exiting Thread")
 
 
 class Display:
@@ -391,13 +401,12 @@ class Display:
 			string = self.outTxt.get()
 			self.txtToSpeechRead = -self.txtToSpeechRead
 		print("got here")
-		t = Thread(target = self.textToSpeech, args = string)
+		t = myThread(string)
 		
 
 
-	def textToSpeech(self, string):
-		print("Running Thread")
-		os.system("say " + string)
+	
+		
 
 
 	def changeHighContrast(self, *args): #Handles high contrast being turned on and off 1 = on, 0 = off
