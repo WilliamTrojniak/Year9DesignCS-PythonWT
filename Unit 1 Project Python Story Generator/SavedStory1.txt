@@ -1,0 +1,2 @@
+Error while attempting to generate story: 
+Error Message: Invalid Gender Selected
