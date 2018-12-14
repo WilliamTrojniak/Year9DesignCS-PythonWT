@@ -6,16 +6,18 @@ from threading import Thread
 import os
 
 
+
 class myThread (threading.Thread):
 	def __init__(self, stringToRead):
 		threading.Thread.__init__(self)
 		self.stringToRead = stringToRead.replace("'", "")
 		self.stringToRead = self.stringToRead.replace("\"", "")
+		self.stringToRead = self.stringToRead.replace("-", "")
+		self.stringToRead = self.stringToRead.replace("\n", " ")
 	def run(self):
 		string = "say " + self.stringToRead
 		os.system(string)
 		print("Exiting Thread")
-		d.isReadingTxtToSpeech = False
 
 
 class Display:
@@ -127,7 +129,6 @@ class Display:
 		
 
 		#Text to speech
-		self.isReadingTxtToSpeech = False
 		self.txtToSpeechRead = 1 #1 = Labels, -1 = Generated Story
 		self.txtToSpeechSntnce = "Welcome to Story Generator. This program was developed by William Trojniak. The text to speech button switches between reading the labels and the generated story. Story Generator. Story Settings. Select Genre. Starting Place. Hero's Characteristics. Hero's Name. Hero's gender. Hero's strengths. Mentor's Characteristics. Mentor's Name. Mentor's gift. Trials Information. Number of trials. Trial Location. Trial. Final Challenge Information. Final Challenge Location. Final Challenge. End Story. Method of getting home. Result of story. Generate Story. Save"
 
@@ -435,20 +436,20 @@ class Display:
 		self.outPutTxtToBox(0, t)
 		
 	def handleTextToSpeech(self, *args):
-		if(self.isReadingTxtToSpeech == False):
-			self.isReadingTxtToSpeech = True
-			string = ""
-			if(self.txtToSpeechRead == 1):
-				string = self.txtToSpeechSntnce
-				self.txtToSpeechRead = -1
-			else:
-				string = self.outTxt.get(1.0, tk.END)
-				self.txtToSpeechRead = 1
-				print("reading story")
-			print("got here")
-			t = myThread(string)
-			t.start()#Creates a thread to read text to speach
+	
 		
+		string = ""
+		if(self.txtToSpeechRead == 1):
+			string = self.txtToSpeechSntnce
+			self.txtToSpeechRead = -1
+		else:
+			string = self.outTxt.get(1.0, tk.END)
+			self.txtToSpeechRead = 1
+			print("reading story")
+		print("got here")
+		t = myThread(string)
+		t.start()#Creates a thread to read text to speach
+
 	def changeHighContrast(self, *args): #Handles high contrast being turned on and off 1 = on, 0 = off
 		
 		if(self.enableHighContrast.get() == 1):
@@ -552,6 +553,7 @@ class Display:
 	def getRandItemFromLs(self, exList): #Returns a random element from a list
 		randIndex = random.randint(0, len(exList)-1)		
 		return exList[randIndex]
+
 
 
 d = Display()
