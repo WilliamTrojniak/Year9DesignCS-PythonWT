@@ -15,6 +15,7 @@ class myThread (threading.Thread):
 		string = "say " + self.stringToRead
 		os.system(string)
 		print("Exiting Thread")
+		d.isReadingTxtToSpeech = False
 
 
 class Display:
@@ -23,7 +24,9 @@ class Display:
 #**** Variables ******************************************************************************************************************************************
 		self.root = tk.Tk()
 
-
+		#Saved stories
+		self.savedStories = []
+		self.savedStoryCntr = 0
 
 		#Colour Storage
 		self.LIGHT_BLUE = "#CAF0F4"
@@ -114,8 +117,9 @@ class Display:
 		self.minTrials = 1
 
 		#Text to speech
+		self.isReadingTxtToSpeech = False
 		self.txtToSpeechRead = 1 #1 = Labels, -1 = Generated Story
-		self.txtToSpeechSntnce = "Welcome to Story Generator. This program was developed by William Trojniak. The text to speech button switches between reading the labels and the generated story. If you wish to stop this text to speech, press the text to speech button at any time. Story Generator. Story Settings. Select Genre. Starting Place. Hero's Characteristics. Hero's Name. Hero's gender. Hero's strengths. Mentor's Characteristics. Mentor's Name. Mentor's gift. Trials Information. Number of trials. Trial Location. Trial. Final Challenge Information. Final Challenge Location. Final Challenge. End Story. Method of getting home. Result of story. Generate Story. Save"
+		self.txtToSpeechSntnce = "Welcome to Story Generator. This program was developed by William Trojniak. The text to speech button switches between reading the labels and the generated story. Story Generator. Story Settings. Select Genre. Starting Place. Hero's Characteristics. Hero's Name. Hero's gender. Hero's strengths. Mentor's Characteristics. Mentor's Name. Mentor's gift. Trials Information. Number of trials. Trial Location. Trial. Final Challenge Information. Final Challenge Location. Final Challenge. End Story. Method of getting home. Result of story. Generate Story. Save"
 
 		#***String Storage For Story Generation*******************************************************************************************************************
 		#General
@@ -142,9 +146,6 @@ class Display:
 #**** Window 1 time Configuration ******************************************************************************************************************************************
 		
 		self.root.title(self.windowTitle)
-
-
-		
 
 #**** Widgets ******************************************************************************************************************************************
 
@@ -267,7 +268,7 @@ class Display:
 		self.genStoryBttn = tk.Button(self.outFrame, text = "Generate Story", command = self.genStory)
 		self.txtScroll = tk.Scrollbar(self.outFrame)
 		self.outTxt = tk.Text(self.outFrame, height = self.outTxtH, width = self.outTxtW, yscrollcommand=self.txtScroll.set)
-		self.saveBttn = tk.Button(self.outFrame, text = "Save")
+		self.saveBttn = tk.Button(self.outFrame, text = "Save", command = self.saveStory)
 		self.txtScroll.config(command = self.outTxt.yview)
 		#************ PACKING WIDGETS *****************************************#
 		self.outFrame.grid(row = 2, column = 1, rowspan = 4, columnspan = 2, padx = self.frameExtPadX, pady = self.frameExtPadY)
@@ -394,25 +395,26 @@ class Display:
 			self.outTxt.insert(tk.END, outStr)
 		self.outTxt.config(state = "disabled")
 
+	def saveStory(self, *args):
+		print("done")
+
+
+
 	def handleTextToSpeech(self, *args):
-		string = ""
-		if(self.txtToSpeechRead == 1):
-			string = self.txtToSpeechSntnce
-			self.txtToSpeechRead = -1
-		else:
-			string = self.outTxt.get()
-			self.txtToSpeechRead = 1
-			print("reading story")
-		print("got here")
-		t = myThread(string)
-		t.start()
+		if(self.isReadingTxtToSpeech = False):
+			self.isReadingTxtToSpeech = True
+			string = ""
+			if(self.txtToSpeechRead == 1):
+				string = self.txtToSpeechSntnce
+				self.txtToSpeechRead = -1
+			else:
+				string = self.outTxt.get(1.0, tk.END)
+				self.txtToSpeechRead = 1
+				print("reading story")
+			print("got here")
+			t = myThread(string)
+			t.start()#Creates a thread to read text to speach
 		
-
-
-	
-		
-
-
 	def changeHighContrast(self, *args): #Handles high contrast being turned on and off 1 = on, 0 = off
 		
 		if(self.enableHighContrast.get() == 1):
