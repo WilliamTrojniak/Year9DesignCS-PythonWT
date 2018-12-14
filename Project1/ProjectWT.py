@@ -2,16 +2,18 @@ import tkinter as tk
 import tkinter.font as tkFont
 import random
 import threading
+from threading import Thread
 import os
 
 
-def myThread(threading.Thread):
+class myThread (threading.Thread):
 	def __init__(self, stringToRead):
 		threading.Thread.__init__(self)
-		self.stringToRead = stringToRead
+		self.stringToRead = stringToRead.replace("'", "")
+		self.stringToRead = self.stringToRead.replace("\"", "")
 	def run(self):
-		print("reading")
-		#os.system("say " + string)
+		string = "say " + self.stringToRead
+		os.system(string)
 		print("Exiting Thread")
 
 
@@ -396,12 +398,14 @@ class Display:
 		string = ""
 		if(self.txtToSpeechRead == 1):
 			string = self.txtToSpeechSntnce
-			self.textToSpeech = -self.txtToSpeechRead
-		elif(self.txtToSpeechRead == -1):
+			self.txtToSpeechRead = -1
+		else:
 			string = self.outTxt.get()
-			self.txtToSpeechRead = -self.txtToSpeechRead
+			self.txtToSpeechRead = 1
+			print("reading story")
 		print("got here")
 		t = myThread(string)
+		t.start()
 		
 
 
