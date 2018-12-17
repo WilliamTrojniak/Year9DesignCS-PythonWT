@@ -4,6 +4,7 @@ import random
 import threading
 from threading import Thread
 import os
+import datetime
 
 
 
@@ -317,6 +318,7 @@ class Display:
 #**** Functions ******************************************************************************************************************************************
 
 	def genStory(self):
+		print(datetime.datetime.now().time())#Used for evaluating runtime
 		#************ STORES ENTRY VALUES AS TEMPORARY VARIABLES *****************************************
 		genreVar = self.genre.get()
 		strtPlace = self.strtPlaceEntr.get()
@@ -414,6 +416,7 @@ class Display:
 		else:
 			self.outTxt.insert(tk.END, outStr)
 		self.outTxt.config(state = "disabled")
+		print(datetime.datetime.now().time())#Used for evaluating runtime
 
 	def saveStory(self, *args):
 		storyName = "SavedStory" + str(self.savedStoryCntr) + ".txt"
