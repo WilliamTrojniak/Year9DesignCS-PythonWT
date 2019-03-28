@@ -1,2 +1,3 @@
 SavedStory0.txt
 SavedStory1.txt
+SavedStory2.txt

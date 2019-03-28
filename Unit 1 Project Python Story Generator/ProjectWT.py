@@ -428,7 +428,7 @@ class Display:
 		f.write(storyName + "\n")
 		f.close()
 		self.savedStoryCntr+= 1
-
+		
 		self.savedStoryLsBox.insert(tk.END, storyName)
 
 	def loadStory(self, event):
